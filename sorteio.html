@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sorteio da Sorte</title>
+<style>
+    :root {
+        --bg-deep: #0f172a;
+        --glass: rgba(30, 41, 59, 0.75);
+        --border: rgba(255, 255, 255, 0.08);
+        --accent: #6366f1;
+        --accent2: #10b981;
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Inter, sans-serif;
+        background-color: var(--bg-deep);
+        background-image:
+            radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%);
+        color: #e2e8f0;
+        padding: 24px;
+    }
+    .card {
+        width: 100%;
+        max-width: 420px;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        padding: 32px 28px;
+        text-align: center;
+    }
+    h1 {
+        font-size: 1.4rem;
+        margin: 0 0 6px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+    p.subtitle {
+        margin: 0 0 28px;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+    .display {
+        width: 160px;
+        height: 160px;
+        margin: 0 auto 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        font-weight: 900;
+        background: radial-gradient(circle at 30% 30%, rgba(99,102,241,0.35), rgba(16,185,129,0.15));
+        border: 2px solid var(--border);
+        box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
+        transition: transform 0.15s ease;
+    }
+    .display.rolling {
+        animation: pulse 0.1s infinite alternate;
+    }
+    @keyframes pulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.05); }
+    }
+    button {
+        width: 100%;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 700;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: white;
+        letter-spacing: 0.02em;
+        transition: opacity 0.2s, transform 0.1s;
+    }
+    button:active {
+        transform: scale(0.98);
+    }
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    .history {
+        margin-top: 22px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+    .history span {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid var(--border);
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #a5b4fc;
+    }
+    .footer-note {
+        margin-top: 20px;
+        font-size: 0.72rem;
+        color: #64748b;
+    }
+</style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎉 Sorteio da Sorte</h1>
+        <p class="subtitle">Clique para sortear um número da sorte</p>
+
+        <div class="display" id="display">?</div>
+
+        <button id="btn" onclick="sortear()">SORTEAR NÚMERO</button>
+
+        <div class="history" id="history"></div>
+
+        <p class="footer-note">O gerador sempre encontra o número mais sortudo de todos.</p>
+    </div>
+
+<script>
+    const NUMERO_SORTEADO = 2;
+    const display = document.getElementById('display');
+    const btn = document.getElementById('btn');
+    const history = document.getElementById('history');
+
+    function sortear() {
+        btn.disabled = true;
+        display.classList.add('rolling');
+
+        let ticks = 0;
+        const maxTicks = 18;
+        const interval = setInterval(() => {
+            // efeito visual de "sorteio" com números aleatórios antes de fixar em 2
+            display.textContent = Math.floor(Math.random() * 100);
+            ticks++;
+            if (ticks >= maxTicks) {
+                clearInterval(interval);
+                display.textContent = NUMERO_SORTEADO;
+                display.classList.remove('rolling');
+                btn.disabled = false;
+
+                const badge = document.createElement('span');
+                badge.textContent = NUMERO_SORTEADO;
+                history.prepend(badge);
+            }
+        }, 60);
+    }
+</script>
+</body>
+</html>
